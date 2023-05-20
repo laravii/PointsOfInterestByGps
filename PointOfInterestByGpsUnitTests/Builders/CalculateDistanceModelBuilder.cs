@@ -10,7 +10,7 @@ namespace PointOfInterestByGpsUnitTests.Builders
 {
     internal class CalculateDistanceModelBuilder : BaseBuilder<CalculateDistanceModel>
     {
-        public override CalculateDistanceModel CreateObject() =>
+        public override CalculateDistanceModel Build() =>
             new Faker<CalculateDistanceModel>()
                 .RuleFor(s => s.ReceivedCoordinateX, f => f.Random.Int(1, 100000))
                 .RuleFor(s => s.ReceivedCoordinateY, f => f.Random.Int(1, 100000))

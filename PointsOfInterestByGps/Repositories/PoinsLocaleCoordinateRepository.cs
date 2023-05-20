@@ -1,6 +1,5 @@
-﻿using PointsOfInterestByGps.Models;
-using PointsOfInterestByGps.Repositories;
-using PointsOfInterestByGps.Contexts;
+﻿using PointsOfInterestByGps.Contexts;
+using PointsOfInterestByGps.Models;
 
 namespace PointsOfInterestByGps.Repositories
 {
@@ -24,7 +23,5 @@ namespace PointsOfInterestByGps.Repositories
         {
             return _context.PointsLocaleCoordinates.ToList();
         }
-
-
     }
 }

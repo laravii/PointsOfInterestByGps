@@ -5,9 +5,6 @@ namespace PointsOfInterestByGps.Contexts
 {
     public class PointLocaleCoordinateContext : DbContext
     {
-        public PointLocaleCoordinateContext(DbContextOptions<PointLocaleCoordinateContext> options) : base(options)
-        {
-        }
-        public DbSet<PointsLocaleCoordinatesModel> PointsLocaleCoordinates { get; set; }
+        public DbSet<PointsLocaleCoordinatesModel> PointsLocaleCoordinates { get; }
     }
 }

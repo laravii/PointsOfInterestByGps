@@ -19,7 +19,7 @@ namespace PointsOfInterestByGps.Controllers
         }
 
         [HttpGet("/points")]
-        public IActionResult GetAllPoints()
+        public ActionResult<List<PointsLocaleCoordinatesModel>> GetAllPoints()
         {
             var points = _repository.GetAllPoints();
 
@@ -28,7 +28,7 @@ namespace PointsOfInterestByGps.Controllers
 
 
         [HttpGet("/points/by/distance/{coordinateX}/{coordinateY}/{maxDistance}")]
-        public IActionResult GetNearPoints(int coordinateX, int coordinateY, int maxDistance = 10)
+        public ActionResult<List<PointsLocaleCoordinatesModel>> GetNearPoints(int coordinateX, int coordinateY, int maxDistance = 10)
         {
             var points = _repository.GetAllPoints();
             List<PointsLocaleCoordinatesModel> nearPoints = new();
@@ -54,7 +54,7 @@ namespace PointsOfInterestByGps.Controllers
         }
 
         [HttpPost("/points/create")]
-        public IActionResult Post([FromBody] PointsLocaleCordinateRequest request)
+        public ActionResult<PointsLocaleCoordinatesModel> CreateNewPoint([FromBody] PointsLocaleCordinateRequest request)
         {
             PointsLocaleCoordinatesModel model = new(request.PointDescription, request.CoordinateX, request.CoordinateY);
             var points = _repository.Create(model);

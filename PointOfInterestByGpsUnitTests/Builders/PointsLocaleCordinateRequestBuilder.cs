@@ -10,10 +10,7 @@ namespace PointOfInterestByGpsUnitTests.Builders
 {
     internal class PointsLocaleCordinateRequestBuilder : BaseBuilder<PointsLocaleCordinateRequest>
     {
-        public override PointsLocaleCordinateRequest CreateObject()
-        {
-            throw new NotImplementedException();
-        }
+        public override PointsLocaleCordinateRequest Build() => CreateRequest();
 
         private PointsLocaleCordinateRequest CreateRequest() =>
             new Faker<PointsLocaleCordinateRequest>()
