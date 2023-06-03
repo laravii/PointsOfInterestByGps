@@ -1,7 +1,10 @@
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using PointsOfInterestByGps.Contexts;
 using PointsOfInterestByGps.Repositories;
+using PointsOfInterestByGps.Requests;
+using PointsOfInterestByGps.Validations;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,7 +20,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services
     .AddDbContext<PointLocaleCoordinateContext>(opt => opt.UseInMemoryDatabase("pointCoordinate"))
-    .AddScoped<IPoinsLocaleCoordinateRepository, PoinsLocaleCoordinateRepository>();
+    .AddScoped<IPoinsLocaleCoordinateRepository, PoinsLocaleCoordinateRepository>()
+    .AddScoped<IValidator<PointsLocaleCordinateRequest>, PointsLocaleCordinateValidator>();
 
 var app = builder.Build();
 

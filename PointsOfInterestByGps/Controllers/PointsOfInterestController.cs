@@ -5,6 +5,7 @@ using PointsOfInterestByGps.Repositories;
 using PointsOfInterestByGps.Requests;
 using PointsOfInterestByGps.Contexts;
 using PointsOfInterestByGps.Validations;
+using FluentValidation;
 
 namespace PointsOfInterestByGps.Controllers
 {
@@ -13,10 +14,12 @@ namespace PointsOfInterestByGps.Controllers
     public class PointsOfInterestController : Controller
     {
         private readonly IPoinsLocaleCoordinateRepository _repository;
+        private readonly IValidator<PointsLocaleCordinateRequest> _validator;
 
-        public PointsOfInterestController(IPoinsLocaleCoordinateRepository repository)
+        public PointsOfInterestController(IPoinsLocaleCoordinateRepository repository, IValidator<PointsLocaleCordinateRequest> validator)
         {
             _repository = repository;
+            _validator = validator;
         }
 
         [HttpGet("/points")]
@@ -57,10 +60,9 @@ namespace PointsOfInterestByGps.Controllers
         [HttpPost("/points/create")]
         public ActionResult<PointsLocaleCoordinatesModel> CreateNewPoint([FromBody] PointsLocaleCordinateRequest request)
         {
-            PointsLocaleCordinateValidator validator = new();
-            var validatorResult = validator.Validate(request);
+            var validatorResult = _validator.Validate(request);
 
-            if (!ModelState.IsValid)
+            if (!validatorResult.IsValid)
             {
                 return BadRequest(validatorResult.Errors);
             }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using PointOfInterestByGpsUnitTests.Builders;
 using PointsOfInterestByGps.Controllers;
@@ -11,6 +12,7 @@ namespace PointOfInterestByGpsUnitTests.Controllers
     public class PointsOfInterestControllerTests
     {
         private readonly Mock<IPoinsLocaleCoordinateRepository> _repositoryMock;
+        private readonly Mock<IValidator<PointsLocaleCordinateRequest>> _validatorMock;
         private readonly PointsLocaleCoordinatesModelBuilder _modelBuilder;
         private readonly PointsLocaleCordinateRequestBuilder _requestBuilder;
         private readonly PointsOfInterestController _sut;
@@ -18,9 +20,10 @@ namespace PointOfInterestByGpsUnitTests.Controllers
         public PointsOfInterestControllerTests()
         {
             _repositoryMock = new();
+            _validatorMock = new();
             _modelBuilder = new();
             _requestBuilder = new();
-            _sut = new(_repositoryMock.Object);
+            _sut = new(_repositoryMock.Object, _validatorMock.Object);
         }
 
         [Fact]
