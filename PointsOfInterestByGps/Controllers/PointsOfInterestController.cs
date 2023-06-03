@@ -4,6 +4,7 @@ using PointsOfInterestByGps.Models;
 using PointsOfInterestByGps.Repositories;
 using PointsOfInterestByGps.Requests;
 using PointsOfInterestByGps.Contexts;
+using PointsOfInterestByGps.Validations;
 
 namespace PointsOfInterestByGps.Controllers
 {
@@ -56,6 +57,13 @@ namespace PointsOfInterestByGps.Controllers
         [HttpPost("/points/create")]
         public ActionResult<PointsLocaleCoordinatesModel> CreateNewPoint([FromBody] PointsLocaleCordinateRequest request)
         {
+            PointsLocaleCordinateValidator validator = new();
+            var validatorResult = validator.Validate(request);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(validatorResult.Errors);
+            }
             PointsLocaleCoordinatesModel model = new(request.PointDescription, request.CoordinateX, request.CoordinateY);
             var points = _repository.Create(model);
             return Ok(points);

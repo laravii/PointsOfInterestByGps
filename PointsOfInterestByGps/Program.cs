@@ -1,13 +1,17 @@
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
-using PointsOfInterestByGps.Repositories;
 using PointsOfInterestByGps.Contexts;
 using PointsOfInterestByGps.Repositories;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddFluentValidationClientsideAdapters();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
