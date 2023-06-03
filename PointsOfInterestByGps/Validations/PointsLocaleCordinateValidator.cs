@@ -10,13 +10,13 @@ namespace PointsOfInterestByGps.Validations
             RuleFor(request => request.CoordinateX)
                 .NotEmpty()
                 .NotNull()
-                .GreaterThan(1)
+                .GreaterThan(0)
                 .WithMessage("Por favor, insira um número positivo maior que 0");
 
             RuleFor(request => request.CoordinateY)
                 .NotEmpty()
                 .NotNull()
-                .GreaterThan(1)
+                .GreaterThan(0)
                 .WithMessage("Por favor, insira um número positivo maior que 0"); 
 
             RuleFor(request => request.PointDescription)
