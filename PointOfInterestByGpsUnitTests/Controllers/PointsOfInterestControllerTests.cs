@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using PointOfInterestByGpsUnitTests.Builders;
@@ -6,6 +7,7 @@ using PointsOfInterestByGps.Controllers;
 using PointsOfInterestByGps.Models;
 using PointsOfInterestByGps.Repositories;
 using PointsOfInterestByGps.Requests;
+using PointsOfInterestByGps.Validations;
 
 namespace PointOfInterestByGpsUnitTests.Controllers
 {
@@ -27,7 +29,7 @@ namespace PointOfInterestByGpsUnitTests.Controllers
         }
 
         [Fact]
-        public void ShouldGetAllPoints()
+        public void Should_Get_All_Points()
         {
             List<PointsLocaleCoordinatesModel> modelList = new()
             {
@@ -45,7 +47,7 @@ namespace PointOfInterestByGpsUnitTests.Controllers
         }
 
         [Fact]
-        public void ShouldFindNearPoints()
+        public void Should_Find_Near_Points()
         {
             List<PointsLocaleCoordinatesModel> modelList = new()
             {
@@ -64,13 +66,15 @@ namespace PointOfInterestByGpsUnitTests.Controllers
 
 
         [Fact]
-        public void ShouldCreateNewPoint()
+        public void Should_Create_New_Point()
         {
             PointsLocaleCordinateRequest request = _requestBuilder.Build();
             PointsLocaleCoordinatesModel model = _modelBuilder
                 .Description(request.PointDescription)
                 .Coordinates(request.CoordinateX, request.CoordinateY)
                 .Build();
+            _validatorMock.Setup(x => x.Validate(request)).Returns(new ValidationResult());
+
 
             _repositoryMock.Setup(x => x.Create(It.IsAny<PointsLocaleCoordinatesModel>())).Returns(model);
 
@@ -79,6 +83,22 @@ namespace PointOfInterestByGpsUnitTests.Controllers
 
             Assert.True(item != null);
             _repositoryMock.Verify(x => x.Create(It.IsAny<PointsLocaleCoordinatesModel>()), Times.Once());
+        }
+
+
+        [Fact]
+        public void Should_BadRequest_When_Valitation_Fail_To_CreateNewPoint()
+        {
+            PointsLocaleCordinateRequest request = _requestBuilder.Build();
+
+            var validationError = new ValidationFailure();
+            _validatorMock.Setup(x => x.Validate(request)).Returns(
+                new ValidationResult(
+                    new List<ValidationFailure>() { validationError }));
+
+            var result = _sut.CreateNewPoint(request).Result as BadRequestObjectResult;
+
+            _repositoryMock.Verify(x => x.Create(It.IsAny<PointsLocaleCoordinatesModel>()), Times.Never());
         }
     }
 }
