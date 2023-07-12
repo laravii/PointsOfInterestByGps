@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build application
+      run: dotnet build --configuration Release
+
+    - name: Run tests
+      run: dotnet test --configuration Release --logger "trx;LogFileName=test-results.trx"
+
+    - name: Verify test results
+      run: |
+        testResultsFile="**/test-results.trx"
+        # failedTests=$(find ${{github.workspace}} -name $testResultsFile | xargs grep -c "<Outcome>Error</Outcome>")
+        # if [[ $failedTests -ne 0 ]]; then
+        #   echo "Tests failed. Exiting..."
+        #   exit 1
+        # fi
