@@ -28,19 +28,22 @@ jobs:
           if: success()
           run: dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.8.4
       
-        # - name: Gerar relatório de cobertura de testes com ReportGenerator
-        #   if: success()
-        #   run: |
-        #     cd ${{ env.CAMINHO_PROJETO_TESTES }}/TestResults
-        #     # Acessar diretório gerado com o XML de Cobertura de código
-        #     cd $(ls -d */|head -n 1)
-        #     reportgenerator "-reports:coverage.cobertura.xml" "-targetdir:coveragereport" -reporttypes:Html
-        
+        - name: Gerar relatório de cobertura de testes com ReportGenerator
+          if: success()
+          run: |               
+            cd ${{ env.CAMINHO_PROJETO_TESTES }}/TestResults
+            ls
+            cd $(ls -d */|head -n 1)
+            ls
+
         - name: Validate code coverage
           run: |
-              if [ -f ${{ env.CAMINHO_PROJETO_TESTES }}/TestResults/$(ls -d */|head -n 1)/coverage.cobertura.xml ]; then
+               cd ${{ env.CAMINHO_PROJETO_TESTES }}/TestResults
+               ls
+               cd $(ls -d */|head -n 1)
+               ls
                 # Extract the coverage percentage from the generated report
-                coverage=$(cat src/${{ env.CAMINHO_PROJETO_TESTES }}/TestResults/$(ls -d */|head -n 1)/coverage.cobertura.xml | grep -oP '(?<=<LineRate>)[^<]+')
+                coverage=$(cat ./coverage.cobertura.xml | grep -oP '(?<=<LineRate>)[^<]+')
     
                 # Convert coverage percentage to numeric value
                 coverage_percentage=$(awk "BEGIN {print $coverage * 100}")
@@ -50,8 +53,4 @@ jobs:
                   echo "Code coverage is below the threshold (80%). Coverage percentage: $coverage_percentage%"
                   exit 1
                 fi
-              else
-                echo "Code coverage file not found. Please ensure that coverage is being generated."
-                exit 1
-              fi
     
