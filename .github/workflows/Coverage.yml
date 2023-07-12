@@ -35,4 +35,27 @@ jobs:
             # Acessar diretório gerado com o XML de Cobertura de código
             cd $(ls -d */|head -n 1)
             reportgenerator "-reports:coverage.cobertura.xml" "-targetdir:coveragereport" -reporttypes:Html
+        
+        - name: Validate code coverage
+          run: |
+              cd ${{ env.CAMINHO_PROJETO_TESTES }}/TestResults
+              # Acessar diretório gerado com o XML de Cobertura de código
+              cd $(ls -d */|head -n 1)
+              # Check if coverage file exists
+              if [ -f ./Tests/TestResults/coverage.cobertura.xml ]; then
+                # Extract the coverage percentage from the generated report
+                coverage=$(cat src/Todo.Tests/Tests/TestResults/coverage.cobertura.xml | grep -oP '(?<=<LineRate>)[^<]+')
+    
+                # Convert coverage percentage to numeric value
+                coverage_percentage=$(awk "BEGIN {print $coverage * 100}")
+    
+                # Check if coverage percentage is below the threshold
+                if (( $(echo "$coverage_percentage < 80" | bc -l) )); then
+                  echo "Code coverage is below the threshold (80%). Coverage percentage: $coverage_percentage%"
+                  exit 1
+                fi
+              else
+                echo "Code coverage file not found. Please ensure that coverage is being generated."
+                exit 1
+              fi
     
