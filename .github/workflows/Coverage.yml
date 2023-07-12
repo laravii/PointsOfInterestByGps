@@ -26,7 +26,10 @@ jobs:
 
       - name: Build and run tests
         run: dotnet test ${{ env.CAMINHO_PROJETO_TESTES }} --verbosity minimal --logger:"html;LogFileName=resultado-testes.html" --collect:"XPlat Code Coverage"
-
+      
+      - name: Check Directory
+        run: ls ${{ env.CAMINHO_PROJETO_TESTES }}
+      
       - name: Validate code coverage
         run: |
           cd ${{ env.CAMINHO_PROJETO_TESTES }}/TestResults
