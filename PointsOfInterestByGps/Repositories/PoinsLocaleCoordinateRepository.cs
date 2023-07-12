@@ -14,14 +14,16 @@ namespace PointsOfInterestByGps.Repositories
 
         public PointsLocaleCoordinatesModel Create(PointsLocaleCoordinatesModel model)
         {
-            _context.Add(model);
+            _context.PointsLocaleCoordinates.Add(model);
             _context.SaveChanges();
             return model;
         }
 
         public List<PointsLocaleCoordinatesModel> GetAllPoints()
         {
-            return _context.PointsLocaleCoordinates.ToList();
+            var points = _context.PointsLocaleCoordinates;
+            if(points == null) return new List<PointsLocaleCoordinatesModel>();
+            return points.ToList();
         }
     }
 }
