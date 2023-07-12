@@ -43,7 +43,7 @@ jobs:
                cd $(ls -d */|head -n 1)
                ls
                 # Extract the coverage percentage from the generated report
-                coverage=$(cat ./coverage.cobertura.xml | grep -oP '(?<=<LineRate>)[^<]+')
+                coverage=$(cat **/coverage.cobertura.xml | grep -oP '(?<=<LineRate>)[^<]+')
     
                 # Convert coverage percentage to numeric value
                 coverage_percentage=$(awk "BEGIN {print $coverage * 100}")
