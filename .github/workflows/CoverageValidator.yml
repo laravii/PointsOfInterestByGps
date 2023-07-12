@@ -1,47 +1,36 @@
-
-name: dotnet5_tests_coverlet_nuget
+name: Code Coverage Validation
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 env:
-  CAMINHO_PROJETO_TESTES: ./PointOfInterestByGpsUnitTests
+    CAMINHO_PROJETO_TESTES: ./PointOfInterestByGpsUnitTests
 
 jobs:
-  tests:
-
+  build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Setup .NET 6
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 6.0.X
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x'
 
-    - name: Testes com .NET 5 + xUnit + Fluent Assertions + Coverlet
-      run: dotnet test ${{ env.CAMINHO_PROJETO_TESTES }} --verbosity minimal --logger:"html;LogFileName=resultado-testes.html" --collect:"XPlat Code Coverage"
+      - name: Restore dependencies
+        run: dotnet restore
 
-    - name: Instalar ReportGenerator
-      if: success()
-      run: dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.8.4
-  
-    - name: Gerar relatório de cobertura de testes com ReportGenerator
-      if: success()
-      run: |
-        cd ${{ env.CAMINHO_PROJETO_TESTES }}/TestResults
-        # Acessar diretório gerado com o XML de Cobertura de código
-        cd $(ls -d */|head -n 1)
-        reportgenerator "-reports:coverage.cobertura.xml" "-targetdir:coveragereport" -reporttypes:Html
-  
-    - name: Validate code coverage
-      if: success()
-      run:  |
+      - name: Build and run tests
+        run: dotnet test --collect:"XPlat Code Coverage"
+
+      - name: Validate code coverage
+        run: |
           cd ${{ env.CAMINHO_PROJETO_TESTES }}/TestResults
+          # Acessar diretório gerado com o XML de Cobertura de código
           cd $(ls -d */|head -n 1)
           # Extract the coverage percentage from the generated report
           coverage=$(cat coverage.cobertura.xml | grep -oP '(?<=<LineRate>)[^<]+')
@@ -55,6 +44,6 @@ jobs:
             exit 1
           fi
           
-    - name: Exclude Program class from coverage
-      run: |
-          echo "-ToDo.Api.Program" >> coverlet.exclude
+      - name: Exclude Program class from coverage
+        run: |
+          echo "-[Namespace].Program" >> coverlet.exclude
