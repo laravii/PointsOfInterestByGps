@@ -25,7 +25,7 @@ jobs:
         run: dotnet restore
 
       - name: Build and run tests
-        run: dotnet test --collect:"XPlat Code Coverage"
+        run: dotnet test ${{ env.CAMINHO_PROJETO_TESTES }} --verbosity minimal --logger:"html;LogFileName=resultado-testes.html" --collect:"XPlat Code Coverage"
 
       - name: Validate code coverage
         run: |
