@@ -3,7 +3,7 @@ name: Code Coverage Validation
 on:
   pull_request:
     branches:
-      - main
+      - master
 
 env:
     CAMINHO_PROJETO_TESTES: ./PointOfInterestByGpsUnitTests
