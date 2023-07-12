@@ -1,5 +1,5 @@
 
-name: dotnet5_tests_coverlet_nuget
+name: Coverage Validator
 
 on:
   push:
